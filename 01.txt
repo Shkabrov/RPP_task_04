@@ -1,0 +1,52 @@
+import edu.uci.ics.jung.algorithms.generators.random.EppsteinPowerLawGenerator;
+import edu.uci.ics.jung.algorithms.layout.CircleLayout;
+import edu.uci.ics.jung.algorithms.layout.Layout;
+import edu.uci.ics.jung.graph.Graph;
+import edu.uci.ics.jung.graph.SparseMultigraph;
+import edu.uci.ics.jung.visualization.BasicVisualizationServer;
+import org.apache.commons.collections15.Factory;
+
+import javax.swing.*;
+import java.awt.*;
+
+class GraphFactory implements Factory<Graph<Integer,String>> {
+    public Graph<Integer,String> create() {
+        return new SparseMultigraph<Integer,String>();
+    }
+}
+
+class VertexFactory implements Factory<Integer> {
+    int a = 0;
+    public Integer create() {
+        return a++;
+    }
+
+}
+class EdgeFactory implements Factory<String> {
+    char aa = 'a';
+    public String create() {
+        return Character.toString(aa++);
+    }
+
+}public class Main {
+
+    public static void main(String[] args) {
+        Graph<Integer, String>  Eppstein = new EppsteinPowerLawGenerator<Integer,String>(new GraphFactory(),
+                new VertexFactory(), new EdgeFactory(), 100, 400, 100).create();
+
+
+        // The Layout<V, E> is parameterized by the vertex and edge types
+        Layout<Integer, String> layout = new CircleLayout(Eppstein);
+        layout.setSize(new Dimension(700,700)); // sets the initial size of the space
+        // The BasicVisualizationServer<V,E> is parameterized by the edge types
+        BasicVisualizationServer<Integer,String> vv =
+                new BasicVisualizationServer<Integer,String>(layout);
+        vv.setPreferredSize(new Dimension(750,750)); //Sets the viewing area size
+
+        JFrame frame = new JFrame("Graph Small World");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.getContentPane().add(vv);
+        frame.pack();
+        frame.setVisible(true);
+    }
+}
